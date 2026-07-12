@@ -145,7 +145,7 @@ const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${LEAD_EMAIL}`;
    Worst case, abuse exhausts the free quota and the chat automatically
    falls back to the built-in keyword assistant below.
    -------------------------------------------------------------------------- */
-const GEMINI_API_KEY = ""; // paste the restricted free-tier key here
+const GEMINI_API_KEY = (window.SSK_CONFIG || {}).geminiKey || ""; // set in config.js
 const GEMINI_MODEL = "gemini-flash-latest";
 
 async function sendLead(data) {
@@ -297,6 +297,8 @@ const KNOWLEDGE = [
 const FORM_MARKER = "[[CONNECT_FORM]]";
 
 const AI_SYSTEM_PROMPT = `You are the website assistant for SSK & Associates, Chartered Accountants — the practice of CA Sasumana Saikumar, based in India.
+
+Today's date is ${new Date().toDateString()}.
 
 Firm contact details:
 - Mobile: +91 8639628613

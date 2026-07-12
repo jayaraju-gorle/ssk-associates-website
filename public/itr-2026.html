@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2" />
 </head>
 <body>
 
@@ -125,6 +125,11 @@
         <small>Answers tax &amp; service questions</small>
       </div>
       <div class="chat-header-actions">
+        <select id="chat-lang" title="Voice language" aria-label="Voice language">
+          <option value="en-IN">EN</option>
+          <option value="hi-IN">हिंदी</option>
+          <option value="te-IN">తెలుగు</option>
+        </select>
         <button id="chat-voice" aria-label="Toggle spoken replies" title="Read replies aloud">🔇</button>
         <button id="chat-close" aria-label="Close chat">✕</button>
       </div>
@@ -148,7 +153,7 @@
     </form>
   </div>
 
-  <script src="config.js"></script>
-  <script src="app.js"></script>
+  <script src="config.js?v=2"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>

@@ -226,6 +226,11 @@ img { max-width: 100%; }
 .chat-header button { background: none; border: none; color: #fff; font-size: 1rem; cursor: pointer; }
 .chat-header-actions { display: flex; gap: 0.6rem; align-items: center; }
 #chat-voice { font-size: 1.05rem; }
+#chat-lang {
+  background: rgba(255, 255, 255, 0.15); color: #fff; border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px; font: inherit; font-size: 0.78rem; padding: 0.15rem 0.3rem; cursor: pointer;
+}
+#chat-lang option { color: var(--ink); }
 
 .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; background: var(--cream); }
 .msg { max-width: 85%; padding: 0.6rem 0.85rem; border-radius: 14px; font-size: 0.92rem; white-space: pre-wrap; word-wrap: break-word; }

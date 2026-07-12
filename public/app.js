@@ -17,16 +17,41 @@ const TEAM = [
   //   bio: "Area of expertise.", phone: "", email: "" },
 ];
 
+// Professional line-style SVG icons (24x24 viewBox, stroke = currentColor)
+const IC = (paths) =>
+  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
+
+const ICONS = {
+  // document with tick — return filed correctly
+  itr: IC('<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 14.5 11 16.5 15 12.5"/>'),
+  // storefront — small business
+  shop: IC('<path d="M4 11v9h16v-9"/><path d="M9 20v-5h6v5"/><path d="M3.2 7 5 3h14l1.8 4H3.2z"/><path d="M3.2 7c0 1.5 1.2 2.7 2.8 2.7S8.8 8.5 8.8 7c0 1.5 1.4 2.7 3.2 2.7s3.2-1.2 3.2-2.7c0 1.5 1.2 2.7 2.8 2.7s2.8-1.2 2.8-2.7"/>'),
+  // rising chart — gains
+  gains: IC('<path d="M3 3v18h18"/><polyline points="6 15 10.5 10.5 13.5 13.5 19 8"/><polyline points="15 8 19 8 19 12"/>'),
+  // percent — tax deducted at source
+  tds: IC('<line x1="19" y1="5" x2="5" y2="19"/><circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/>'),
+  // invoice / tax receipt — GST
+  gst: IC('<path d="M6 2h12v20l-2.4-1.8L13.2 22 12 21.1 10.8 22l-2.4-1.8L6 22V2z"/><line x1="9.5" y1="7.5" x2="14.5" y2="7.5"/><line x1="9.5" y1="11" x2="14.5" y2="11"/><line x1="9.5" y1="14.5" x2="12.5" y2="14.5"/>'),
+  // identity card — PAN / TAN / DSC
+  idcard: IC('<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="10.5" r="2"/><path d="M5.2 15.8c.6-1.6 1.7-2.3 2.8-2.3s2.2.7 2.8 2.3"/><line x1="14" y1="9.5" x2="19" y2="9.5"/><line x1="14" y1="13" x2="19" y2="13"/>'),
+  // calendar with rupee — quarterly instalments
+  advance: IC('<rect x="3" y="4" width="18" height="17" rx="2"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="3" y1="9" x2="21" y2="9"/><text x="12" y="18.2" text-anchor="middle" font-size="9.5" font-family="Georgia, serif" fill="currentColor" stroke="none">₹</text>'),
+  // envelope with alert — notice received
+  notice: IC('<rect x="2" y="5" width="16" height="13" rx="2"/><polyline points="2.5 7 10 12.5 17.5 7"/><line x1="21.5" y1="5" x2="21.5" y2="11"/><circle cx="21.5" cy="14.5" r="0.4" fill="currentColor"/>'),
+  // pie chart — planning the split
+  plan: IC('<path d="M21.2 15.9A10 10 0 1 1 8.1 2.8"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>'),
+};
+
 const SERVICES = [
-  { icon: "🧾", title: "Income Tax Return Filing", desc: "Accurate, on-time ITR filing for salaried individuals, business owners and professionals." },
-  { icon: "🏪", title: "Presumptive Taxation", desc: "Simplified filing for small businesses and professionals under 44AD, 44ADA and 44AE." },
-  { icon: "📈", title: "Capital Gains Computation", desc: "Stocks, mutual funds and property — correct computation, exemptions and disclosures." },
-  { icon: "🧮", title: "TDS Filing & Compliance", desc: "TDS returns, corrections and reconciliation with Form 26AS so nothing triggers a notice." },
-  { icon: "🧿", title: "GST Registration & Returns", desc: "New GST registrations, monthly/quarterly returns and annual filings, handled end to end." },
-  { icon: "🪪", title: "PAN / TAN / DSC Services", desc: "New applications, corrections and digital signature certificates — quick and hassle-free." },
-  { icon: "🗓️", title: "Advance Tax Calculation", desc: "Quarterly advance tax estimates so you avoid interest under 234B and 234C." },
-  { icon: "📮", title: "Income Tax Notices", desc: "Received a notice? We analyse it, draft the response and represent your case." },
-  { icon: "📊", title: "Tax Planning", desc: "Deductions, investments and regime selection planned in advance — pay only what you must." },
+  { icon: ICONS.itr, title: "Income Tax Return Filing", desc: "Accurate, on-time ITR filing for salaried individuals, business owners and professionals." },
+  { icon: ICONS.shop, title: "Presumptive Taxation", desc: "Simplified filing for small businesses and professionals under 44AD, 44ADA and 44AE." },
+  { icon: ICONS.gains, title: "Capital Gains Computation", desc: "Stocks, mutual funds and property — correct computation, exemptions and disclosures." },
+  { icon: ICONS.tds, title: "TDS Filing & Compliance", desc: "TDS returns, corrections and reconciliation with Form 26AS so nothing triggers a notice." },
+  { icon: ICONS.gst, title: "GST Registration & Returns", desc: "New GST registrations, monthly/quarterly returns and annual filings, handled end to end." },
+  { icon: ICONS.idcard, title: "PAN / TAN / DSC Services", desc: "New applications, corrections and digital signature certificates — quick and hassle-free." },
+  { icon: ICONS.advance, title: "Advance Tax Calculation", desc: "Quarterly advance tax estimates so you avoid interest under 234B and 234C." },
+  { icon: ICONS.notice, title: "Income Tax Notices", desc: "Received a notice? We analyse it, draft the response and represent your case." },
+  { icon: ICONS.plan, title: "Tax Planning", desc: "Deductions, investments and regime selection planned in advance — pay only what you must." },
 ];
 
 const WHY_US = [
@@ -88,7 +113,7 @@ const renderInto = (id, nodes) => {
 };
 
 renderInto("services-grid", SERVICES.map((s) =>
-  el(`<div class="card"><span class="icon">${s.icon}</span><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p></div>`)));
+  el(`<div class="card"><span class="icon-badge">${s.icon}</span><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p></div>`)));
 
 renderInto("why-list", WHY_US.map((w) => el(`<li>${esc(w)}</li>`)));
 renderInto("why-list-card", WHY_US.map((w) => el(`<li>${esc(w)}</li>`)));

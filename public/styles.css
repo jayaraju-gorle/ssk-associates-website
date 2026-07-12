@@ -127,6 +127,12 @@ img { max-width: 100%; }
 .card h3 { font-size: 1.08rem; margin-bottom: 0.4rem; }
 .card p { color: var(--muted); font-size: 0.93rem; }
 .card .icon { font-size: 1.5rem; display: block; margin-bottom: 0.6rem; }
+.icon-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px; border-radius: 12px; margin-bottom: 0.7rem;
+  background: #e7f0ea; color: var(--green-700);
+}
+.icon-badge svg { width: 26px; height: 26px; }
 
 /* ITR cards */
 .itr-card { position: relative; }

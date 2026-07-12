@@ -351,115 +351,6 @@ function addMsg(text, cls) {
   return div;
 }
 
-/* ---- Voice mode (Web Speech API — no keys, no backend) ------------------
-   🎤 mic: speech-to-text; a spoken question gets a spoken answer.
-   🔊 header toggle: read ALL replies aloud (typed ones too).             */
-
-const micBtn = document.getElementById("chat-mic");
-const voiceBtn = document.getElementById("chat-voice");
-const langSel = document.getElementById("chat-lang");
-let voiceReplies = false;      // header toggle state
-let lastInputWasVoice = false; // spoken question → spoken answer
-
-function stopSpeaking() {
-  if ("speechSynthesis" in window) speechSynthesis.cancel();
-}
-
-function speak(text) {
-  if (!("speechSynthesis" in window)) return;
-  speechSynthesis.cancel();
-  const clean = text
-    .replace(/[*_#`•]/g, "")
-    .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, "") // strip emoji
-    .replace(/₹/g, " rupees ");
-  const u = new SpeechSynthesisUtterance(clean);
-  // Match the voice to the reply's script (Telugu/Devanagari), falling back
-  // to the selected voice language, then any English voice.
-  const want = /[ఀ-౿]/.test(clean) ? "te"
-    : /[ऀ-ॿ]/.test(clean) ? "hi"
-    : (langSel ? langSel.value.slice(0, 2) : "en");
-  u.lang = want === "te" ? "te-IN" : want === "hi" ? "hi-IN" : "en-IN";
-  const voices = speechSynthesis.getVoices();
-  u.voice =
-    voices.find((v) => v.lang.toLowerCase().startsWith(want)) ||
-    voices.find((v) => v.lang === "en-IN") ||
-    voices.find((v) => v.lang.startsWith("en")) ||
-    null;
-  speechSynthesis.speak(u);
-}
-
-function maybeSpeak(reply) {
-  if (voiceReplies || lastInputWasVoice) speak(reply);
-  lastInputWasVoice = false;
-}
-
-if (voiceBtn) {
-  if (!("speechSynthesis" in window)) {
-    voiceBtn.style.display = "none";
-  } else {
-    voiceBtn.addEventListener("click", () => {
-      voiceReplies = !voiceReplies;
-      voiceBtn.textContent = voiceReplies ? "🔊" : "🔇";
-      voiceBtn.title = voiceReplies ? "Spoken replies on" : "Read replies aloud";
-      if (!voiceReplies) speechSynthesis.cancel();
-    });
-  }
-}
-
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-if (micBtn && !SR) micBtn.style.display = "none"; // e.g. Firefox
-if (micBtn && SR) {
-  const recognition = new SR();
-  recognition.lang = langSel ? langSel.value : "en-IN";
-  recognition.interimResults = true;
-  let recognizing = false;
-
-  if (langSel) {
-    langSel.addEventListener("change", () => {
-      recognition.lang = langSel.value;
-    });
-  }
-
-  recognition.onresult = (e) => {
-    chatInput.value = Array.from(e.results).map((r) => r[0].transcript).join("");
-  };
-  recognition.onend = () => {
-    recognizing = false;
-    micBtn.classList.remove("listening");
-    if (chatInput.value.trim()) {
-      lastInputWasVoice = true;
-      chatForm.requestSubmit();
-    }
-  };
-  recognition.onerror = (e) => {
-    recognizing = false;
-    micBtn.classList.remove("listening");
-    if (e.error === "not-allowed") {
-      addMsg("I need microphone permission for voice — please allow it in your browser, or just type your question.", "bot");
-    }
-  };
-
-  micBtn.addEventListener("click", () => {
-    if (recognizing) {
-      recognition.stop();
-      return;
-    }
-    if ("speechSynthesis" in window) speechSynthesis.cancel();
-    chatInput.value = "";
-    chatInput.placeholder = "Listening…";
-    recognizing = true;
-    micBtn.classList.add("listening");
-    try {
-      recognition.start();
-    } catch {
-      recognizing = false;
-      micBtn.classList.remove("listening");
-    }
-    recognition.addEventListener("end", () => {
-      chatInput.placeholder = "Ask about ITR, GST, TDS, due dates…";
-    }, { once: true });
-  });
-}
 
 function showLeadForm() {
   // The form lives inside the message stream (like a bot card), so it scrolls
@@ -493,19 +384,15 @@ function openChat() {
 function closeChat() {
   panel.hidden = true;
   bubble.textContent = "💬";
-  if ("speechSynthesis" in window) speechSynthesis.cancel();
 }
 
 bubble.addEventListener("click", () => (panel.hidden ? openChat() : closeChat()));
 closeBtn.addEventListener("click", closeChat);
 document.querySelectorAll("[data-open-chat]").forEach((b) => b.addEventListener("click", openChat));
 
-// Barge-in: any user action interrupts the assistant's speech immediately
-chatInput.addEventListener("input", stopSpeaking);
 
 chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  stopSpeaking();
   const text = chatInput.value.trim();
   if (!text) return;
   chatInput.value = "";
@@ -532,7 +419,6 @@ chatForm.addEventListener("submit", async (e) => {
     }
     addMsg(answer.reply, "bot");
     history.push({ role: "assistant", content: answer.reply });
-    maybeSpeak(answer.reply);
     if (answer.showForm) showLeadForm();
     chatSend.disabled = false;
     chatInput.focus();
@@ -553,7 +439,6 @@ chatForm.addEventListener("submit", async (e) => {
     if (json.reply) {
       addMsg(json.reply, "bot");
       history.push({ role: "assistant", content: json.reply });
-      maybeSpeak(json.reply);
     }
     if (json.showForm) showLeadForm();
   } catch (err) {

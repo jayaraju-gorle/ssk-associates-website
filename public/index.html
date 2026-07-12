@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=3" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
 
@@ -155,15 +155,7 @@
         <strong>SSK Assistant</strong>
         <small>Answers tax &amp; service questions</small>
       </div>
-      <div class="chat-header-actions">
-        <select id="chat-lang" title="Voice language" aria-label="Voice language">
-          <option value="en-IN">EN</option>
-          <option value="hi-IN">हिंदी</option>
-          <option value="te-IN">తెలుగు</option>
-        </select>
-        <button id="chat-voice" aria-label="Toggle spoken replies" title="Read replies aloud">🔇</button>
-        <button id="chat-close" aria-label="Close chat">✕</button>
-      </div>
+      <button id="chat-close" aria-label="Close chat">✕</button>
     </div>
     <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
     <form id="chat-lead-form" class="chat-lead-form" hidden>
@@ -179,12 +171,11 @@
     </form>
     <form id="chat-form" class="chat-input">
       <input id="chat-input" autocomplete="off" maxlength="1000" placeholder="Ask about ITR, GST, TDS, due dates…" />
-      <button type="button" id="chat-mic" aria-label="Ask by voice" title="Ask by voice">🎤</button>
       <button type="submit" aria-label="Send">➤</button>
     </form>
   </div>
 
-  <script src="config.js?v=3"></script>
-  <script src="app.js?v=3"></script>
+  <script src="config.js?v=4"></script>
+  <script src="app.js?v=4"></script>
 </body>
 </html>

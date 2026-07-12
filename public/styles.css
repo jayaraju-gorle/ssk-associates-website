@@ -225,9 +225,15 @@ img { max-width: 100%; }
 .msg.bot { align-self: flex-start; background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
 .msg.typing { color: var(--muted); font-style: italic; }
 
+/* Lead form renders inside the message stream as a bot-style card,
+   so it scrolls with the conversation instead of covering it. */
 .chat-lead-form {
-  padding: 0.8rem 1rem; border-top: 1px solid var(--line); background: #f4f8f4;
-  display: flex; flex-direction: column; gap: 0.5rem;
+  align-self: flex-start; width: 92%;
+  background: #fff; border: 1px solid var(--line);
+  border-radius: 14px; border-bottom-left-radius: 4px;
+  padding: 0.8rem 0.9rem; margin-top: 0.2rem;
+  display: flex; flex-direction: column; gap: 0.45rem;
+  box-shadow: 0 2px 8px rgba(18, 63, 46, 0.06);
 }
 .lead-form-title { font-size: 0.85rem; font-weight: 600; color: var(--green-900); }
 .chat-lead-form input, .chat-lead-form textarea {

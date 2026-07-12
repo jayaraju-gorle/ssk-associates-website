@@ -336,7 +336,9 @@ async function geminiAnswer(chatHistory) {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: AI_SYSTEM_PROMPT }] },
         contents,
-        generationConfig: { maxOutputTokens: 1000 },
+        // thinkingBudget 0: FAQ replies don't need reasoning tokens, which
+        // otherwise eat into maxOutputTokens and truncate answers mid-sentence
+        generationConfig: { maxOutputTokens: 2048, thinkingConfig: { thinkingBudget: 0 } },
       }),
     }
   );
@@ -401,6 +403,14 @@ function addMsg(text, cls) {
   return div;
 }
 
+function showLeadForm() {
+  // The form lives inside the message stream (like a bot card), so it scrolls
+  // with the conversation instead of covering it.
+  messagesBox.appendChild(leadForm);
+  leadForm.hidden = false;
+  messagesBox.scrollTop = messagesBox.scrollHeight;
+}
+
 function openChat() {
   panel.hidden = false;
   bubble.textContent = "▾";
@@ -449,7 +459,7 @@ chatForm.addEventListener("submit", async (e) => {
     }
     addMsg(answer.reply, "bot");
     history.push({ role: "assistant", content: answer.reply });
-    if (answer.showForm) leadForm.hidden = false;
+    if (answer.showForm) showLeadForm();
     chatSend.disabled = false;
     chatInput.focus();
     return;
@@ -470,7 +480,7 @@ chatForm.addEventListener("submit", async (e) => {
       addMsg(json.reply, "bot");
       history.push({ role: "assistant", content: json.reply });
     }
-    if (json.showForm) leadForm.hidden = false;
+    if (json.showForm) showLeadForm();
   } catch (err) {
     typing.remove();
     addMsg(err.message + " You can also call us at +91 86396 28613.", "bot");

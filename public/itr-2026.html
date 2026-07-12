@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ITR Season 2026 Guide — SSK & Associates, Chartered Accountants</title>
+  <meta name="description" content="ITR filing guide for AY 2026-27: which ITR form applies to you, due dates, documents required, and key updates. File on time with SSK & Associates, Hyderabad." />
+  <link rel="icon" href="ca-india-logo.png" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/">
+        <img class="brand-icon" src="ca-india-logo.png" alt="CA India" />
+        <span class="brand-text">
+          <strong>SSK &amp; Associates</strong>
+          <small>Chartered Accountants</small>
+        </span>
+      </a>
+      <nav class="nav">
+        <a href="/">Home</a>
+        <a href="#itr-forms">ITR Forms</a>
+        <a href="#documents">Documents</a>
+        <a href="#updates">Key Updates</a>
+        <a href="/#contact" class="nav-cta">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">A new financial year, a smarter you</p>
+          <h1>ITR Season <span class="accent">2026</span> is here.</h1>
+          <p class="lede">File on time. Stay compliant. <strong>Save tax.</strong> Build peace of mind — with a Chartered Accountant who handles the details for you.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="/#contact">Book a Consultation</a>
+            <button class="btn btn-ghost" data-open-chat>Ask our AI Assistant</button>
+          </div>
+          <ul class="hero-points">
+            <li>Faster processing of refunds</li>
+            <li>Easy loan &amp; visa documentation</li>
+            <li>Carry forward eligible losses</li>
+          </ul>
+        </div>
+        <aside class="hero-card">
+          <p class="hero-card-title">Don't wait for the last date!</p>
+          <div class="due-row"><span>ITR-1 &amp; ITR-2</span><strong>31 July 2026</strong></div>
+          <div class="due-row"><span>ITR-3 &amp; ITR-4 (non-audit)</span><strong>31 July 2026</strong></div>
+          <div class="due-row"><span>Audit cases</span><strong>31 Oct 2026</strong></div>
+          <div class="due-row muted"><span>Revised return</span><strong>31 Mar 2027</strong></div>
+          <p class="hero-card-note">Plan today. Prosper tomorrow.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ITR FORMS -->
+    <section id="itr-forms" class="section section-alt">
+      <div class="container">
+        <h2>Which ITR form is for you?</h2>
+        <p class="section-sub">Not sure? Ask our assistant, or just send us your documents — we'll pick the right one.</p>
+        <div class="grid grid-2" id="itr-grid"></div>
+      </div>
+    </section>
+
+    <!-- DOCUMENTS -->
+    <section id="documents" class="section">
+      <div class="container docs-layout">
+        <div>
+          <h2>Documents we require</h2>
+          <p class="section-sub">Keep these handy and your filing takes minutes, not days.</p>
+          <ul class="check-list" id="docs-list"></ul>
+        </div>
+        <div class="smart-card">
+          <h3>Smart filers remember</h3>
+          <ul class="check-list compact" id="smart-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- KEY UPDATES -->
+    <section id="updates" class="section section-alt">
+      <div class="container">
+        <h2>Key updates — AY 2026-27</h2>
+        <div class="grid grid-3" id="updates-grid"></div>
+      </div>
+    </section>
+
+    <!-- WHY FILE ON TIME -->
+    <section class="section">
+      <div class="container">
+        <h2>Why file your ITR on time?</h2>
+        <div class="grid grid-3" id="ontime-grid"></div>
+        <div class="cta-band">
+          <p>Timely filing helps you claim refunds faster and keeps you away from penalties.</p>
+          <a class="btn btn-primary" href="/#contact">Start your filing today</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p><strong>SSK &amp; Associates</strong> — Chartered Accountants</p>
+      <p>📍 Kakatiya Hills, Madhapur, Hyderabad – 500081</p>
+      <p>✉️ Sasumana.saikumar@gmail.com &nbsp;|&nbsp; 📞 +91 86396 28613</p>
+      <p class="fineprint">© <span id="year"></span> SSK &amp; Associates. Information on this site is general in nature and not a substitute for professional advice.</p>
+    </div>
+  </footer>
+
+  <!-- CHAT WIDGET -->
+  <button id="chat-bubble" aria-label="Chat with our assistant">💬</button>
+  <div id="chat-panel" class="chat-panel" hidden>
+    <div class="chat-header">
+      <div>
+        <strong>SSK Assistant</strong>
+        <small>Answers tax &amp; service questions</small>
+      </div>
+      <button id="chat-close" aria-label="Close chat">✕</button>
+    </div>
+    <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
+    <form id="chat-lead-form" class="chat-lead-form" hidden>
+      <p class="lead-form-title">Share your details — the CA will contact you soon.</p>
+      <input name="name" required maxlength="100" placeholder="Name*" />
+      <input name="phone" required maxlength="20" placeholder="Phone*" />
+      <input name="email" type="email" maxlength="100" placeholder="Email (optional)" />
+      <textarea name="message" rows="2" maxlength="500" placeholder="What do you need help with?"></textarea>
+      <div class="lead-form-actions">
+        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="lead-cancel">Not now</button>
+      </div>
+    </form>
+    <form id="chat-form" class="chat-input">
+      <input id="chat-input" autocomplete="off" maxlength="1000" placeholder="Ask about ITR filing, documents, due dates…" />
+      <button type="submit" aria-label="Send">➤</button>
+    </form>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,6 +1,28 @@
 # SSK & Associates — Chartered Accountants Website
 
-Website + AI assistant for the CA practice of **CA Sasumana Saikumar** (SSK & Associates).
+Website + assistant for the CA practice of **CA Sasumana Saikumar** (SSK & Associates).
+
+**Live site:** hosted on GitHub Pages (static mode) — deployed automatically from `main` by `.github/workflows/deploy-pages.yml`, serving the `public/` folder.
+
+## Static mode vs backend mode
+
+The site runs in one of two modes, controlled by `API_BASE` at the top of `public/app.js`:
+
+| | Static mode (default, GitHub Pages) | Backend mode |
+|---|---|---|
+| Hosting | GitHub Pages — free, no server | Any Node host running `server.js` |
+| Chat assistant | Built-in instant assistant (keyword knowledge base in `app.js`) | Claude API (Opus 4.8) |
+| Lead emails | [FormSubmit.co](https://formsubmit.co) relay → `Sasumana.saikumar@gmail.com` | Nodemailer SMTP + `leads.json` backup |
+| Setup needed | **One-time:** the first form submission triggers an activation email from FormSubmit to the destination inbox — click the link in it once, and all future leads are delivered. | `.env` with `ANTHROPIC_API_KEY` + SMTP creds |
+
+To switch to backend mode later: host `server.js` anywhere, then set `API_BASE = "https://your-api-host"` in `public/app.js`.
+
+## Custom domain (GitHub Pages)
+
+1. Buy a domain (e.g. `sskassociates.in`).
+2. At the DNS provider, add a `CNAME` record: `www` → `jayaraju-gorle.github.io`. (Optionally apex `A` records to GitHub Pages IPs: 185.199.108.153, .109., .110., .111.)
+3. In the GitHub repo → Settings → Pages → Custom domain, enter the domain and enable "Enforce HTTPS" (certificate is issued automatically).
+4. Add a file `public/CNAME` containing just the domain name so deployments keep it.
 
 ## What's included
 

@@ -4,5 +4,5 @@
    Generative Language API. Anything here is public once deployed — never put
    a billing-linked or unrestricted key in this file. */
 window.SSK_CONFIG = {
-  geminiKey: "",
+  geminiKey: "AQ.Ab8RN6LlJQnNHKMijgGllMHI51spzyBWBKiXfiN-M8AwW5238Q",
 };

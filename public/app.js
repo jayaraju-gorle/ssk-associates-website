@@ -135,6 +135,19 @@ const API_BASE = ""; // e.g. "https://ssk-api.example.com" — empty = static mo
 const LEAD_EMAIL = "Sasumana.saikumar@gmail.com";
 const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${LEAD_EMAIL}`;
 
+/* --------------------------------------------------------------------------
+   AI assistant via Gemini (static mode).
+   SECURITY NOTE: any key placed here is visible to visitors — that is
+   unavoidable on a static site. Only use a FREE-TIER Google AI Studio key
+   with NO billing attached, and restrict it in Google Cloud console:
+     • Application restriction: HTTP referrers → your site's domain(s)
+     • API restriction: Generative Language API only
+   Worst case, abuse exhausts the free quota and the chat automatically
+   falls back to the built-in keyword assistant below.
+   -------------------------------------------------------------------------- */
+const GEMINI_API_KEY = ""; // paste the restricted free-tier key here
+const GEMINI_MODEL = "gemini-flash-latest";
+
 async function sendLead(data) {
   if (API_BASE) {
     const res = await fetch(`${API_BASE}/api/contact`, {
@@ -277,6 +290,66 @@ const KNOWLEDGE = [
   },
 ];
 
+/* ==========================================================================
+   Gemini-powered assistant (static mode, optional)
+   ========================================================================== */
+
+const FORM_MARKER = "[[CONNECT_FORM]]";
+
+const AI_SYSTEM_PROMPT = `You are the website assistant for SSK & Associates, Chartered Accountants — the practice of CA Sasumana Saikumar, based in India.
+
+Firm contact details:
+- Mobile: +91 8639628613
+- Email: Sasumana.saikumar@gmail.com
+- Office: Kakatiya Hills, Madhapur, Hyderabad – 500081
+- Support available online and offline, for clients anywhere in India.
+
+Services: ITR filing (salaried, business, professionals, HUFs), presumptive taxation (44AD/44ADA/44AE), capital gains computation (stocks, mutual funds, property), TDS filing & compliance with Form 26AS/AIS/TIS reconciliation, GST registration & returns, PAN/TAN/DSC services, advance tax calculation, income-tax notice responses, and tax planning.
+
+Key facts for AY 2026-27:
+- ITR-1 (SAHAJ): salaried up to ₹50 lakh, pensioners, up to 2 house properties. Due 31 July 2026.
+- ITR-2: capital gains, foreign assets/income, multiple house properties. Due 31 July 2026.
+- ITR-3: business/professional income (non-audit). Due 31 July 2026 (31 Oct 2026 if audit).
+- ITR-4 (SUGAM): presumptive taxation, non-audit. Due 31 July 2026 (31 Oct 2026 if audit).
+- Updates: up to 2 house properties in ITR-1/4; enhanced asset reporting; separate F&O reporting in ITR-3; revised return till 31 March 2027; only 12-digit Aadhaar accepted; review AIS before filing.
+- Documents: PAN, Aadhaar, Form 16, Form 26AS + AIS + TIS, bank statements, interest certificates, investment proofs (80C/80D/NPS/ELSS), home-loan interest certificate, capital gains statements, rental details.
+
+Rules:
+1. Be warm, concise and professional — under 120 words. Match the visitor's language (English, Hindi, Telugu all fine). Plain text only, no markdown formatting.
+2. Answer general/educational questions from the facts above; for personal tax advice (specific numbers, notices, regime choice), give a brief pointer and recommend a consultation.
+3. Never compute exact tax liability or promise refunds.
+4. If the visitor wants to talk to the CA, book a consultation, get a callback, or asks about fees — say you'll open a quick form, and end your reply with the exact token ${FORM_MARKER}. Do not mention or explain the token.
+5. Stay on topic: the firm, its services, Indian tax/compliance basics. Politely decline anything else.`;
+
+async function geminiAnswer(chatHistory) {
+  const contents = chatHistory.slice(-20).map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: AI_SYSTEM_PROMPT }] },
+        contents,
+        generationConfig: { maxOutputTokens: 1000 },
+      }),
+    }
+  );
+  if (!res.ok) throw new Error(`Gemini ${res.status}`);
+  const data = await res.json();
+  let reply = (data.candidates?.[0]?.content?.parts || [])
+    .map((p) => p.text || "")
+    .join("")
+    .trim();
+  if (!reply) throw new Error("Empty reply");
+  const showForm = reply.includes(FORM_MARKER);
+  reply = reply.replaceAll(FORM_MARKER, "").trim();
+  return { reply, showForm };
+}
+
 function localAnswer(text) {
   const q = text.toLowerCase().trim();
 
@@ -358,11 +431,23 @@ chatForm.addEventListener("submit", async (e) => {
   history.push({ role: "user", content: text });
 
   if (!API_BASE) {
-    // Static mode: instant built-in assistant
-    const { reply, showForm } = localAnswer(text);
-    addMsg(reply, "bot");
-    history.push({ role: "assistant", content: reply });
-    if (showForm) leadForm.hidden = false;
+    // Static mode: Gemini if a key is configured, else the built-in assistant.
+    // Gemini failures (quota, network) fall back to the built-in assistant.
+    let answer;
+    if (GEMINI_API_KEY) {
+      const typing = addMsg("typing…", "bot typing");
+      try {
+        answer = await geminiAnswer(history);
+      } catch {
+        answer = localAnswer(text);
+      }
+      typing.remove();
+    } else {
+      answer = localAnswer(text);
+    }
+    addMsg(answer.reply, "bot");
+    history.push({ role: "assistant", content: answer.reply });
+    if (answer.showForm) leadForm.hidden = false;
     chatSend.disabled = false;
     chatInput.focus();
     return;

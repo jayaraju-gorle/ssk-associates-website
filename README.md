@@ -11,11 +11,23 @@ The site runs in one of two modes, controlled by `API_BASE` at the top of `publi
 | | Static mode (default, GitHub Pages) | Backend mode |
 |---|---|---|
 | Hosting | GitHub Pages — free, no server | Any Node host running `server.js` |
-| Chat assistant | Built-in instant assistant (keyword knowledge base in `app.js`) | Claude API (Opus 4.8) |
+| Chat assistant | **Gemini API** (if `GEMINI_API_KEY` is set in `app.js`), with automatic fallback to the built-in keyword assistant | Claude API (Opus 4.8) |
 | Lead emails | [FormSubmit.co](https://formsubmit.co) relay → `Sasumana.saikumar@gmail.com` | Nodemailer SMTP + `leads.json` backup |
 | Setup needed | **One-time:** the first form submission triggers an activation email from FormSubmit to the destination inbox — click the link in it once, and all future leads are delivered. | `.env` with `ANTHROPIC_API_KEY` + SMTP creds |
 
 To switch to backend mode later: host `server.js` anywhere, then set `API_BASE = "https://your-api-host"` in `public/app.js`.
+
+## Enabling the Gemini AI assistant (static mode)
+
+A key on a static site is visible to visitors — there is no way to hide it. The safe setup is a **free-tier key with no billing**, locked to this site:
+
+1. The site owner (CA) signs in to [Google AI Studio](https://aistudio.google.com) with their Google account and creates an API key. **Do not attach billing** — the free tier is enough for a small site, and with no billing there is nothing to drain.
+2. In [Google Cloud console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials), edit the key:
+   - **Application restrictions** → HTTP referrers → add the site's URLs (e.g. `https://<user>.github.io/*` and later `https://yourdomain.in/*`)
+   - **API restrictions** → restrict to *Generative Language API*
+3. Paste the key into `GEMINI_API_KEY` at the top of `public/app.js` and push.
+
+If the key is missing, quota-exhausted, or the API errors, the chat silently falls back to the built-in keyword assistant — the widget never breaks.
 
 ## Custom domain (GitHub Pages)
 

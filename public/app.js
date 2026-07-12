@@ -238,91 +238,16 @@ if (contactForm) {
 }
 
 /* ==========================================================================
-   Built-in assistant knowledge base (static mode)
-   --------------------------------------------------------------------------
-   Instant, keyword-matched answers to first-level questions. When API_BASE
-   is set, the Claude-powered backend is used instead.
+   Fallback when the AI is unavailable (no key, quota exhausted, API error):
+   be honest and capture the lead instead of guessing with canned answers.
    ========================================================================== */
 
-const CONNECT_WORDS = ["connect", "talk to", "speak", "call me", "call back", "callback", "consult", "appointment", "book", "meet", "reach the ca", "contact the ca", "human"];
+const AI_UNAVAILABLE_REPLY =
+  "Our automated AI assistant is coming soon! 🚀 For now, please share your query using the form below and you'll hear back from us soon. You can also call us directly at +91 86396 28613.";
 
-const KNOWLEDGE = [
-  {
-    keys: ["fee", "charge", "cost", "price", "pricing", "how much"],
-    reply: "Fees depend on the scope of work — a simple salaried ITR costs less than a return with capital gains or business income. CA Sasumana Saikumar will confirm the exact fee after a quick discussion. Let me open a form so he can reach you.",
-    showForm: true,
-  },
-  {
-    keys: ["due date", "last date", "deadline", "when to file", "due"],
-    reply: "Key due dates for AY 2026-27:\n• ITR-1 to ITR-4 (non-audit): 31 July 2026\n• Audit cases (ITR-3/4): 31 October 2026\n• Revised return: up to 31 March 2027\n\nFiling early means faster refunds — don't wait for the last date!",
-  },
-  {
-    keys: ["which itr", "which form", "itr form", "itr-1", "itr 1", "sahaj", "itr-2", "itr 2", "itr-3", "itr 3", "itr-4", "itr 4", "sugam", "salaried"],
-    reply: "Quick guide:\n• ITR-1 (SAHAJ): salaried up to ₹50 lakh, pensioners, up to 2 house properties\n• ITR-2: capital gains, foreign assets, or multiple house properties\n• ITR-3: business or professional income\n• ITR-4 (SUGAM): presumptive taxation (44AD/44ADA/44AE)\n\nNot sure? Just share your documents with us — we'll pick the right one.",
-  },
-  {
-    keys: ["document", "papers", "what do i need", "form 16", "required", "checklist"],
-    reply: "Documents we typically need:\n• PAN & Aadhaar\n• Form 16 / salary details\n• Form 26AS, AIS & TIS\n• Bank statements & interest certificates\n• Investment proofs (80C, 80D, NPS, ELSS)\n• Home loan interest certificate\n• Capital gains statements & rental details (if any)",
-  },
-  {
-    keys: ["gst"],
-    reply: "We handle GST end to end — new registrations, monthly/quarterly returns, and annual filings. Share your details and we'll get you started.",
-  },
-  {
-    keys: ["tds"],
-    reply: "We take care of TDS returns, corrections, and reconciliation with Form 26AS/AIS so mismatches never turn into notices.",
-  },
-  {
-    keys: ["pan", "tan", "dsc", "digital signature"],
-    reply: "We assist with PAN and TAN applications and corrections, and with Digital Signature Certificates (DSC) — quick and hassle-free.",
-  },
-  {
-    keys: ["capital gain", "shares", "stocks", "mutual fund", "sold property", "property sale"],
-    reply: "Capital gains from shares, mutual funds, or property need correct computation, exemption planning and disclosure — usually in ITR-2 (or ITR-3 with business income). This is one of our core services; a quick consultation helps get it right.",
-  },
-  {
-    keys: ["presumptive", "44ad", "44ada", "44ae", "freelancer", "small business"],
-    reply: "Under presumptive taxation (44AD for small businesses, 44ADA for professionals, 44AE for transporters), you declare income at a prescribed rate and skip detailed books. Filed via ITR-4 (SUGAM). We can tell you in minutes whether you qualify.",
-  },
-  {
-    keys: ["refund"],
-    reply: "For a faster refund: file early, pre-validate your bank account on the income-tax portal, and e-verify your return immediately after filing. We handle all of this as part of our filing service.",
-  },
-  {
-    keys: ["notice"],
-    reply: "Received an income-tax notice? Don't panic and don't ignore it — most notices have a reply deadline. We analyse the notice, draft the response and represent your case. Let me connect you to the CA.",
-    showForm: true,
-  },
-  {
-    keys: ["update", "new rule", "change", "ay 2026", "2026-27"],
-    reply: "Key updates for AY 2026-27:\n• Up to 2 house properties in ITR-1 & ITR-4\n• Enhanced asset reporting in certain forms\n• Separate F&O reporting in ITR-3\n• Revised return till 31 March 2027\n• Only 12-digit Aadhaar accepted\n• Review AIS carefully before filing",
-  },
-  {
-    keys: ["advance tax"],
-    reply: "Advance tax is payable in quarterly instalments if your tax liability exceeds ₹10,000 a year. We calculate your instalments so you avoid interest under sections 234B and 234C.",
-  },
-  {
-    keys: ["where", "location", "address", "office", "hyderabad", "madhapur"],
-    reply: "Our office: Kakatiya Hills, Madhapur, Hyderabad – 500081.\nWe support clients both online and offline, so you can work with us from anywhere in India.",
-  },
-  {
-    keys: ["phone", "number", "email", "whatsapp", "contact"],
-    reply: "You can reach us at:\n📞 +91 86396 28613\n✉️ Sasumana.saikumar@gmail.com\n📍 Kakatiya Hills, Madhapur, Hyderabad – 500081",
-  },
-  {
-    keys: ["service", "what do you do", "offer", "help with"],
-    reply: "Our services: ITR filing, presumptive taxation, capital gains computation, TDS filing & compliance, GST registration & returns, PAN/TAN/DSC, advance tax, income-tax notice responses, and tax planning. What do you need help with?",
-  },
-  {
-    keys: ["thank"],
-    reply: "You're welcome! 😊 Anything else about ITR, GST, TDS or our services?",
-  },
-  {
-    keys: ["hi", "hello", "namaste", "hey", "good morning", "good evening"],
-    reply: "Hello! 🙏 Ask me about ITR filing, due dates, documents, GST, TDS — or say \"connect me to the CA\" and I'll take your details.",
-    exact: true,
-  },
-];
+function unavailableAnswer() {
+  return { reply: AI_UNAVAILABLE_REPLY, showForm: true };
+}
 
 /* ==========================================================================
    Gemini-powered assistant (static mode, optional)
@@ -398,29 +323,6 @@ async function geminiAnswer(chatHistory) {
     }
   }
   throw lastErr;
-}
-
-function localAnswer(text) {
-  const q = text.toLowerCase().trim();
-
-  if (CONNECT_WORDS.some((w) => q.includes(w))) {
-    return {
-      reply: "Great — please share your details below and CA Sasumana Saikumar will get back to you soon. You can also call directly: +91 86396 28613.",
-      showForm: true,
-    };
-  }
-
-  for (const item of KNOWLEDGE) {
-    const hit = item.exact
-      ? item.keys.some((k) => q === k || q.startsWith(k + " ") || q.startsWith(k + "!"))
-      : item.keys.some((k) => q.includes(k));
-    if (hit) return { reply: item.reply, showForm: !!item.showForm };
-  }
-
-  return {
-    reply: "That's a good question — it's best answered by the CA directly. Share your details below and you'll get a call back, or reach us at +91 86396 28613.",
-    showForm: true,
-  };
 }
 
 /* ==========================================================================
@@ -572,10 +474,19 @@ function openChat() {
   bubble.textContent = "▾";
   if (!greeted) {
     greeted = true;
-    addMsg(
-      "Namaste! 🙏 I'm the SSK & Associates assistant. Ask me anything about ITR filing, GST, TDS, due dates, documents, or our services — or say \"connect me to the CA\" and I'll take your details.",
-      "bot"
-    );
+    if (!API_BASE && !GEMINI_API_KEY) {
+      // AI not configured — set expectations up front and capture the lead
+      addMsg(
+        "Namaste! 🙏 Our automated AI assistant is coming soon. For now, please share your query below and CA Sasumana Saikumar's team will get back to you soon — or call us at +91 86396 28613.",
+        "bot"
+      );
+      showLeadForm();
+    } else {
+      addMsg(
+        "Namaste! 🙏 I'm the SSK & Associates assistant. Ask me anything about ITR filing, GST, TDS, due dates, documents, or our services — or say \"connect me to the CA\" and I'll take your details.",
+        "bot"
+      );
+    }
   }
   chatInput.focus();
 }
@@ -604,20 +515,20 @@ chatForm.addEventListener("submit", async (e) => {
   history.push({ role: "user", content: text });
 
   if (!API_BASE) {
-    // Static mode: Gemini if a key is configured, else the built-in assistant.
-    // Gemini failures (quota, network) fall back to the built-in assistant.
+    // Static mode: Gemini answers; if it's unavailable for any reason we say
+    // so honestly and capture the query as a lead — no canned guessing.
     let answer;
     if (GEMINI_API_KEY) {
       const typing = addMsg("typing…", "bot typing");
       try {
         answer = await geminiAnswer(history);
       } catch (err) {
-        console.warn("Gemini call failed — falling back to built-in assistant:", err);
-        answer = localAnswer(text);
+        console.warn("Gemini call failed:", err);
+        answer = unavailableAnswer();
       }
       typing.remove();
     } else {
-      answer = localAnswer(text);
+      answer = unavailableAnswer();
     }
     addMsg(answer.reply, "bot");
     history.push({ role: "assistant", content: answer.reply });

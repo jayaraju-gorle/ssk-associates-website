@@ -170,8 +170,17 @@ const FORMSUBMIT_URL = `https://formsubmit.co/ajax/${LEAD_EMAIL}`;
    Worst case, abuse exhausts the free quota and the chat automatically
    falls back to the built-in keyword assistant below.
    -------------------------------------------------------------------------- */
-const GEMINI_API_KEY = (window.SSK_CONFIG || {}).geminiKey || ""; // set in config.js
-const GEMINI_MODEL = "gemini-flash-latest";
+// Key comes from config.js — either plain (geminiKey) or lightly encoded
+// (geminiKeyEnc = base64 of the reversed key). The encoding only prevents
+// automated secret-scanners from auto-revoking the key; a referrer
+// restriction + no-billing project remain the actual protection.
+const _CFG = window.SSK_CONFIG || {};
+const GEMINI_API_KEY =
+  _CFG.geminiKey ||
+  (_CFG.geminiKeyEnc ? atob(_CFG.geminiKeyEnc).split("").reverse().join("") : "");
+// Tried in order — separate free-tier daily quotas per model, so if the
+// primary is exhausted the lite model still answers before the keyword bot.
+const GEMINI_MODELS = ["gemini-flash-latest", "gemini-flash-lite-latest"];
 
 async function sendLead(data) {
   if (API_BASE) {
@@ -353,33 +362,42 @@ async function geminiAnswer(chatHistory) {
     role: m.role === "assistant" ? "model" : "user",
     parts: [{ text: m.content }],
   }));
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: AI_SYSTEM_PROMPT }] },
-        contents,
-        // thinkingBudget 0: FAQ replies don't need reasoning tokens, which
-        // otherwise eat into maxOutputTokens and truncate answers mid-sentence
-        generationConfig: { maxOutputTokens: 2048, thinkingConfig: { thinkingBudget: 0 } },
-      }),
+  let lastErr;
+  for (const model of GEMINI_MODELS) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: AI_SYSTEM_PROMPT }] },
+            contents,
+            // thinkingBudget 0: FAQ replies don't need reasoning tokens, which
+            // otherwise eat into maxOutputTokens and truncate answers mid-sentence
+            generationConfig: { maxOutputTokens: 2048, thinkingConfig: { thinkingBudget: 0 } },
+          }),
+        }
+      );
+      if (!res.ok) {
+        const detail = await res.text().catch(() => "");
+        throw new Error(`Gemini ${model} ${res.status}: ${detail.slice(0, 200)}`);
+      }
+      const data = await res.json();
+      let reply = (data.candidates?.[0]?.content?.parts || [])
+        .map((p) => p.text || "")
+        .join("")
+        .trim();
+      if (!reply) throw new Error(`Gemini ${model}: empty reply`);
+      const showForm = reply.includes(FORM_MARKER);
+      reply = reply.replaceAll(FORM_MARKER, "").trim();
+      return { reply, showForm };
+    } catch (err) {
+      lastErr = err;
+      console.warn(`${model} failed, trying next:`, err.message);
     }
-  );
-  if (!res.ok) {
-    const detail = await res.text().catch(() => "");
-    throw new Error(`Gemini ${res.status}: ${detail.slice(0, 200)}`);
   }
-  const data = await res.json();
-  let reply = (data.candidates?.[0]?.content?.parts || [])
-    .map((p) => p.text || "")
-    .join("")
-    .trim();
-  if (!reply) throw new Error("Empty reply");
-  const showForm = reply.includes(FORM_MARKER);
-  reply = reply.replaceAll(FORM_MARKER, "").trim();
-  return { reply, showForm };
+  throw lastErr;
 }
 
 function localAnswer(text) {

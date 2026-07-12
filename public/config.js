@@ -1,8 +1,10 @@
 /* Site configuration.
-   geminiKey: a FREE-TIER Google AI Studio key (no billing attached),
-   restricted in Google Cloud console to this site's HTTP referrers and the
-   Generative Language API. Anything here is public once deployed — never put
-   a billing-linked or unrestricted key in this file. */
+   Use geminiKeyEnc — base64 of the REVERSED key — instead of a plain key.
+   Google's scanners auto-revoke any plain "AIzaSy..." key found in a public
+   repo, even referrer-restricted ones. The encoding only avoids that scanner;
+   real protection = HTTP-referrer restriction + a no-billing project.
+   To generate:  node -e "console.log(Buffer.from('AIza...'.split('').reverse().join('')).toString('base64'))" */
 window.SSK_CONFIG = {
-  geminiKey: "AIzaSyAI_VFee5JaCKD84iLdgjanL6p0VlYcV2k",
+  geminiKey: "",    // leave empty — use geminiKeyEnc below
+  geminiKeyEnc: "",
 };

@@ -367,7 +367,10 @@ async function geminiAnswer(chatHistory) {
       }),
     }
   );
-  if (!res.ok) throw new Error(`Gemini ${res.status}`);
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(`Gemini ${res.status}: ${detail.slice(0, 200)}`);
+  }
   const data = await res.json();
   let reply = (data.candidates?.[0]?.content?.parts || [])
     .map((p) => p.text || "")
@@ -475,7 +478,8 @@ chatForm.addEventListener("submit", async (e) => {
       const typing = addMsg("typing…", "bot typing");
       try {
         answer = await geminiAnswer(history);
-      } catch {
+      } catch (err) {
+        console.warn("Gemini call failed — falling back to built-in assistant:", err);
         answer = localAnswer(text);
       }
       typing.remove();

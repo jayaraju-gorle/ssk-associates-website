@@ -6,5 +6,5 @@
    To generate:  node -e "console.log(Buffer.from('AIza...'.split('').reverse().join('')).toString('base64'))" */
 window.SSK_CONFIG = {
   geminiKey: "",    // leave empty — use geminiKeyEnc below
-  geminiKeyEnc: "",
+  geminiKeyEnc: "d0pqckoyQlEtWkdhdWRiTW1SbkZCM2Joc1cxWUhCdlYzZ0NfUHkxSFpwM0s2TlI4YkEuUUE=",
 };

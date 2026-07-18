@@ -17,8 +17,12 @@ html { scroll-behavior: smooth; }
 body {
   font-family: "Public Sans", system-ui, sans-serif;
   color: var(--ink);
-  background: var(--cream);
   line-height: 1.6;
+  /* CA-themed watermark: pen nib, calculator, ledger, rupee, balance scale,
+     growth chart, pie chart, tick and %, drawn as faint line-art on cream. */
+  background-color: var(--cream);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360'%3E%3Cg fill='none' stroke='%23123f2e' stroke-opacity='0.09' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg transform='translate(34,28) rotate(-24)'%3E%3Cpath d='M14 0 C20 10 21 20 14 32 C7 20 8 10 14 0 Z'/%3E%3Cline x1='14' y1='8' x2='14' y2='24'/%3E%3Ccircle cx='14' cy='25' r='2.2'/%3E%3C/g%3E%3Cg transform='translate(196,36) rotate(9)'%3E%3Crect x='0' y='0' width='34' height='44' rx='4'/%3E%3Crect x='5' y='5' width='24' height='9' rx='1.5'/%3E%3Ccircle cx='9' cy='23' r='1.7'/%3E%3Ccircle cx='17' cy='23' r='1.7'/%3E%3Ccircle cx='25' cy='23' r='1.7'/%3E%3Ccircle cx='9' cy='31' r='1.7'/%3E%3Ccircle cx='17' cy='31' r='1.7'/%3E%3Ccircle cx='25' cy='31' r='1.7'/%3E%3Ccircle cx='9' cy='39' r='1.7'/%3E%3Ccircle cx='17' cy='39' r='1.7'/%3E%3Ccircle cx='25' cy='39' r='1.7'/%3E%3C/g%3E%3Cg transform='translate(296,104) rotate(-7)'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Cline x1='16' y1='16' x2='16' y2='1'/%3E%3Cline x1='16' y1='16' x2='29' y2='23'/%3E%3C/g%3E%3Cg transform='translate(160,150)'%3E%3Cpath d='M0 0 L0 34 L38 34'/%3E%3Cpath d='M5 28 L13 19 L21 23 L33 8'/%3E%3Cpath d='M33 8 L33 14 M33 8 L27 8'/%3E%3C/g%3E%3Ctext transform='translate(84,206) rotate(-11)' font-family='Georgia, serif' font-size='34' fill='%23123f2e' fill-opacity='0.09' stroke='none'%3E%E2%82%B9%3C/text%3E%3Cg transform='translate(244,214) rotate(-8)'%3E%3Crect x='0' y='0' width='32' height='40' rx='3'/%3E%3Cline x1='7' y1='10' x2='25' y2='10'/%3E%3Cline x1='7' y1='17' x2='25' y2='17'/%3E%3Cline x1='7' y1='24' x2='25' y2='24'/%3E%3Cline x1='7' y1='31' x2='17' y2='31'/%3E%3C/g%3E%3Cg transform='translate(52,268) rotate(5)'%3E%3Cline x1='20' y1='2' x2='20' y2='28'/%3E%3Cline x1='12' y1='31' x2='28' y2='31'/%3E%3Cline x1='2' y1='8' x2='38' y2='8'/%3E%3Cpath d='M2 8 L-2 18 M2 8 L6 18 M-4 18 Q2 25 8 18'/%3E%3Cpath d='M38 8 L34 18 M38 8 L42 18 M32 18 Q38 25 44 18'/%3E%3C/g%3E%3Cg transform='translate(168,300) rotate(8)'%3E%3Cpath d='M0 10 L7 17 L20 0'/%3E%3C/g%3E%3Ctext transform='translate(300,330) rotate(9)' font-family='Georgia, serif' font-size='30' fill='%23123f2e' fill-opacity='0.09' stroke='none'%3E%25%3C/text%3E%3C/g%3E%3C/svg%3E");
+  background-size: 360px 360px;
 }
 h1, h2, h3 { font-family: "Fraunces", Georgia, serif; color: var(--green-900); line-height: 1.15; }
 h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 0.4rem; }
@@ -64,8 +68,8 @@ img { max-width: 100%; }
 .season-ribbon strong { font-weight: 700; }
 .season-ribbon:hover { filter: brightness(1.06); }
 
-/* Hero */
-.hero { padding: 4rem 0 3.5rem; background: linear-gradient(160deg, var(--cream) 55%, #eef3ec 100%); }
+/* Hero — translucent wash so the body watermark shows through */
+.hero { padding: 4rem 0 3.5rem; background: linear-gradient(160deg, rgba(250, 246, 238, 0.55) 55%, rgba(238, 243, 236, 0.78) 100%); }
 .hero-inner { display: grid; grid-template-columns: 1.4fr 1fr; gap: 2.5rem; align-items: center; }
 @media (max-width: 820px) { .hero-inner { grid-template-columns: 1fr; } }
 .eyebrow { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.78rem; font-weight: 700; color: var(--amber); margin-bottom: 0.6rem; }
@@ -112,7 +116,7 @@ img { max-width: 100%; }
 
 /* Sections */
 .section { padding: 3.5rem 0; }
-.section-alt { background: #f0efe6; }
+.section-alt { background: rgba(240, 239, 230, 0.72); }
 .section-sub { color: var(--muted); margin-bottom: 1.8rem; max-width: 60ch; }
 
 .grid { display: grid; gap: 1.1rem; }
@@ -174,8 +178,8 @@ img { max-width: 100%; }
 }
 .team-card .role { color: var(--amber); font-weight: 600; font-size: 0.85rem; margin-bottom: 0.4rem; }
 
-/* Contact */
-.section-contact { background: linear-gradient(160deg, #eef3ec, var(--cream)); }
+/* Contact — translucent wash so the body watermark shows through */
+.section-contact { background: linear-gradient(160deg, rgba(238, 243, 236, 0.78), rgba(250, 246, 238, 0.55)); }
 .contact-layout { display: grid; grid-template-columns: 1fr 1.3fr; gap: 2.5rem; align-items: start; }
 @media (max-width: 820px) { .contact-layout { grid-template-columns: 1fr; } }
 .contact-line { font-size: 1.05rem; margin: 0.5rem 0; }
